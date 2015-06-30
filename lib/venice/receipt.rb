@@ -31,7 +31,30 @@ module Venice
 
     attr_accessor :latest_receipt
 
+    # ios6 compatibility
+    attr_reader :bid
+    attr_reader :bvrs
+    attr_reader :transaction_id
+    attr_reader :original_transaction_id
+    attr_reader :purchase_date
+    attr_reader :product_id
+    attr_reader :quantity
+
     def initialize(attributes = {})
+      #
+      # ios6 compatibility
+      #
+      @bid = attributes['bid']
+      @bvrs = attributes['bvrs']
+      @transaction_id = attributes['transaction_id']
+      @original_transaction_id = attributes['original_transaction_id']
+      @purchase_date = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
+      @product_id = attributes['product_id']
+      @quantity = attributes['quantity']
+
+      #
+      # upper ios7
+      #
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
       @original_application_version = attributes['original_application_version']
@@ -58,6 +81,15 @@ module Venice
 
     def to_hash
       {
+        # ios6 compatibility
+        :bid => @bid,
+        :bvrs => @bvrs,
+        :transaction_id => @transaction_id,
+        :original_transaction_id => @original_transaction_id,
+        :purchase_date => (@purchase_date.httpdate rescue nil),
+        :product_id => @product_id,
+        :quantity => @quantity,
+        # upper ios7
         :bundle_id => @bundle_id,
         :application_version => @application_version,
         :original_application_version => @original_application_version,
